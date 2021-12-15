@@ -1,6 +1,6 @@
-package application.model.request.cache.manager;
+package application.model.cache.manager;
 
-import application.model.request.cache.exception.CacheExpiredException;
+import application.model.cache.exception.CacheExpiredException;
 
 public interface Cache<K, V> {
     V get(final K key) throws CacheExpiredException;

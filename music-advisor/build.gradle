@@ -7,7 +7,7 @@ version 'CURRENT'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(12)
+        languageVersion = JavaLanguageVersion.of(14)
     }
 }
 
@@ -16,9 +16,8 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-    implementation 'com.google.code.gson:gson:2.8.7'
+    implementation 'junit:junit:4.13.2'
+    implementation 'com.google.code.gson:gson:2.8.9'
 }
 
 test {

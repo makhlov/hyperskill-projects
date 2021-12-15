@@ -1,4 +1,4 @@
-package application.model.request.cache.exception;
+package application.model.cache.exception;
 
 import java.time.LocalDateTime;
 

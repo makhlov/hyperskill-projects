@@ -1,6 +1,6 @@
-package application.model.request.cache.container;
+package application.model.cache.container;
 
-import application.model.request.cache.exception.CacheExpiredException;
+import application.model.cache.exception.CacheExpiredException;
 
 import java.time.LocalDateTime;
 

@@ -1,11 +1,12 @@
-package application.model.request.cache.container;
+package application.model.cache.container;
 
-import application.model.request.cache.exception.CacheExpiredException;
-import org.junit.jupiter.api.Test;
+import application.model.cache.exception.CacheExpiredException;
+import org.junit.Test;
 
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertThrows;
+import static org.junit.Assert.assertTrue;
 
 public class CachingWrapperTest {
 

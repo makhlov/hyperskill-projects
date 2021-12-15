@@ -1,9 +1,9 @@
-package application.model.request.cache.manager;
+package application.model.cache.manager;
 
-import application.model.request.UserRequestType;
-import application.model.request.cache.container.CachingWrapper;
-import application.model.request.cache.exception.CacheExpiredException;
-import com.google.gson.JsonArray;
+import application.model.UserRequestType;
+import application.model.cache.container.CachingWrapper;
+import application.model.cache.exception.CacheExpiredException;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -12,11 +12,11 @@ import java.util.Map;
 
 import static utils.PropertiesReader.readMainProperties;
 
-public class CachingManagerDefault implements Cache<UserRequestType, JsonArray> {
+public class CachingManagerDefault implements Cache<UserRequestType, JsonObject> {
 
     private int secondsToExpiration;
 
-    private final Map<UserRequestType, CachingWrapper<JsonArray>> cache;
+    private final Map<UserRequestType, CachingWrapper<JsonObject>> cache;
 
     private CachingManagerDefault() {
         this.secondsToExpiration = getDefaultExpirationSecondsFromConfig();
@@ -38,17 +38,19 @@ public class CachingManagerDefault implements Cache<UserRequestType, JsonArray> 
     }
 
     @Override
-    public JsonArray get(UserRequestType key) throws CacheExpiredException {
+    public JsonObject get(UserRequestType key) throws CacheExpiredException, NullPointerException {
         try {
             return cache.get(key).getIfNotExpired();
-        } catch (CacheExpiredException e) {
+        } catch (CacheExpiredException ce) {
             cache.remove(key);
-            throw new CacheExpiredException(e.getMessage());
+            throw new CacheExpiredException(ce.getMessage());
+        } catch (NullPointerException npe) {
+            throw new NullPointerException(npe.getMessage());
         }
     }
 
     @Override
-    public void put(UserRequestType key, JsonArray value) {
+    public void put(UserRequestType key, JsonObject value) {
         LocalDateTime expiration = LocalDateTime.now().plusSeconds(secondsToExpiration);
         cache.put(key, new CachingWrapper(value, expiration));
     }
