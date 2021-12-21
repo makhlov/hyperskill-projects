@@ -5,7 +5,6 @@ import application.model.Model;
 import application.model.exception.ClientServerException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +27,9 @@ public class OperationFeatured implements Operation<List<String>> {
         List<String> result = new ArrayList<>();
         for (var item : items) {
             JsonObject current = item.getAsJsonObject();
-            result.add(current.get("name").getAsString());
-            result.add(current.getAsJsonObject("external_urls").get("spotify").getAsString());
+            StringBuilder builder = new StringBuilder(current.get("name").getAsString());
+            builder.append("\n").append(current.getAsJsonObject("external_urls").get("spotify").getAsString());
+            result.add(builder.toString());
         }
         return result;
     }

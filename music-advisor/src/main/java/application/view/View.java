@@ -3,8 +3,8 @@ package application.view;
 import java.util.List;
 
 public interface View {
-    void addToOutputQueue(String string);
-    void addToOutputQueue(List<String> stringList);
+    void addToOutput(final String string);
+    void addToOutput(final List<String> stringList);
 
     void prev();
     void next();

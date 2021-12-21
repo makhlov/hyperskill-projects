@@ -64,7 +64,7 @@ public final class Application {
 
         ELEMENT_PER_PAGE = (args != null && args.length > 4 && args[4].equals("-page"))?
                 Integer.parseInt(args[5]):
-                Integer.parseInt(config.getProperty("pagination.elementPerPage"));
+                Integer.parseInt(config.getProperty("pagination.itemsPerPage"));
 
         REDIRECT_URI = config.getProperty("authorization.redirectUri");
         CLIENT_ID = config.getProperty("authorization.clientID");
