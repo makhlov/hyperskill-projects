@@ -16,7 +16,7 @@ import java.net.http.HttpResponse;
 
 import static application.model.UserRequestType.*;
 
-public class ModelDefault {
+public class ModelDefault implements Model {
     private String resource;
     private String accessToken;
     private Cache<UserRequestType, JsonObject> cache;
@@ -31,6 +31,7 @@ public class ModelDefault {
         return new ModelDefault(resource, accessToken);
     }
 
+    @Override
     public JsonObject get(UserRequestType type, String[] args) throws ClientServerException {
         return getFromCacheOrReload(type, args);
     }
@@ -56,7 +57,7 @@ public class ModelDefault {
             case FEATURED_PLAYLISTS -> "/v1/browse/featured-playlists";
             case CATEGORIES -> "/v1/browse/categories";
             case NEW_RELEASES -> "/v1/browse/new-releases";
-            case PLAYLISTS -> "/v1/browse/categories/" + args[0];
+            case PLAYLISTS -> "/v1/browse/categories/" + args[0] + "/playlists";
         };
     }
 

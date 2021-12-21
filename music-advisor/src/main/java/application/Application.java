@@ -1,12 +1,9 @@
 package application;
 
 import application.controller.Controller;
-import utils.PropertiesReader;
+import application.controller.ControllerDefault;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 import java.util.Properties;
 import java.util.Scanner;
@@ -22,7 +19,7 @@ import static utils.PropertiesReader.*;
 
 public final class Application {
 
-    private static final String INPUT_PATTERN = "new|featured|categories|playlists|exit|prev|next [\\w\\s]+";
+    private static final String INPUT_PATTERN = "auth|new|featured|categories|playlists|exit|prev|next [\\w\\s]+";
 
     private static Application instance;
     private static Scanner scanner;
@@ -30,7 +27,7 @@ public final class Application {
 
     private Application() {
         scanner = new Scanner(System.in);
-        //TODO: Initialize controller
+        controller = ControllerDefault.create();
     }
 
     public void run() {
