@@ -37,7 +37,7 @@ public class ControllerDefault implements Controller {
     private ControllerDefault() {
         signedIn = false;
         exitCommandReceived = false;
-        view = new ViewConsole();
+        view = ViewConsole.create(ELEMENT_PER_PAGE);
     }
 
     public static Controller create() {
@@ -59,16 +59,16 @@ public class ControllerDefault implements Controller {
         try {
             rout(command, args);
         } catch (ClientServerException | InputMismatchException | AuthException e) {
-            view.addToOutputQueue(e.getMessage());
+            view.addToOutput(e.getMessage());
         } catch (NullPointerException e) {
-            view.addToOutputQueue(EXPIRED);
-            view.addToOutputQueue(PROVIDE_ACCESS);
+            view.addToOutput(EXPIRED);
+            view.addToOutput(PROVIDE_ACCESS);
             perform("auth", NO_ARGUMENTS);
         }
     }
 
     private void updateView(List<String> object) {
-        view.addToOutputQueue(object);
+        view.addToOutput(object);
     }
 
     private void rout(String command, String[] args)
@@ -100,12 +100,12 @@ public class ControllerDefault implements Controller {
                 /* Application */
                 default -> throw new InputMismatchException(UNKNOWN_OPERATION);
             }
-        } else view.addToOutputQueue(PROVIDE_ACCESS);
+        } else view.addToOutput(PROVIDE_ACCESS);
     }
 
     private void auth() throws AuthException {
         AuthCoordinator coordinator = AuthCoordinator.create();
-        view.addToOutputQueue(coordinator.getAccessRequestLink());
+        view.addToOutput(coordinator.getAccessRequestLink());
         ACCESS_TOKEN = coordinator.getAccessToken();
         model = ModelDefault.create(API_SERVER, ACCESS_TOKEN);
         signedIn = true;

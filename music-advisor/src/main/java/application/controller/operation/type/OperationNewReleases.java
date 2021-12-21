@@ -35,9 +35,12 @@ public class OperationNewReleases implements Operation<List<String>> {
                          .deleteCharAt(artistsString.length()-1)
                          .append("]");
 
-            result.add(currentItem.get("name").getAsString());
-            result.add(currentItem.getAsJsonObject("external_urls").get("spotify").getAsString());
-            result.add(artistsString.toString());
+            StringBuilder resultBuilder = new StringBuilder(currentItem.get("name").getAsString());
+            resultBuilder.append("\n")
+                         .append(currentItem.getAsJsonObject("external_urls").get("spotify").getAsString())
+                         .append("\n").append(artistsString);
+
+            result.add(resultBuilder.toString());
         }
         return result;
     }

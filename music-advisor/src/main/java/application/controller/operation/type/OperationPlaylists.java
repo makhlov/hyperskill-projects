@@ -29,18 +29,21 @@ public class OperationPlaylists implements Operation<List<String>> {
 
     @Override
     public List<String> execute(Model model, String[] args) throws ClientServerException {
-        this.model = model;
+        OperationPlaylists.model = model;
         return parsePlaylists(model.get(PLAYLISTS, new String[] {getCategoryIdByNameIfExists(args[0])}));
     }
 
     private static List<String> parsePlaylists(final JsonObject object) {
-        JsonArray categories = object.getAsJsonObject("playlists")
+        JsonArray playlists = object.getAsJsonObject("playlists")
                 .getAsJsonArray("items");
 
         List<String> result = new ArrayList<>();
-        for (var item : categories) {
-            result.add(item.getAsJsonObject().get("name").getAsString());
-            result.add(item.getAsJsonObject().getAsJsonObject("external_urls").get("spotify").getAsString());
+        for (var item : playlists) {
+            StringBuilder builder = new StringBuilder(item.getAsJsonObject().get("name").getAsString());
+            builder.append("\n")
+                   .append(item.getAsJsonObject().getAsJsonObject("external_urls").get("spotify").getAsString());
+
+            result.add(builder.toString());
         }
         return result;
     }
@@ -69,9 +72,8 @@ public class OperationPlaylists implements Operation<List<String>> {
     }
 
     private static JsonArray getCategoriesArray() throws ClientServerException {
-        JsonArray categories = model.get(CATEGORIES, null)
+        return model.get(CATEGORIES, null)
                     .getAsJsonObject("categories")
                     .getAsJsonArray("items");
-        return categories;
     }
 }
