@@ -5,12 +5,9 @@ import application.model.cache.container.CachingWrapper;
 import application.model.cache.exception.CacheExpiredException;
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
-import static utils.PropertiesReader.readMainProperties;
 
 public class CachingManagerDefault implements Cache<UserRequestType, JsonObject> {
 
@@ -18,23 +15,13 @@ public class CachingManagerDefault implements Cache<UserRequestType, JsonObject>
 
     private final Map<UserRequestType, CachingWrapper<JsonObject>> cache;
 
-    private CachingManagerDefault() {
-        this.secondsToExpiration = getDefaultExpirationSecondsFromConfig();
+    private CachingManagerDefault(int secondsToExpiration) {
+        this.secondsToExpiration = secondsToExpiration;
         cache = new HashMap<>();
     }
 
-    public static CachingManagerDefault create() {
-        return new CachingManagerDefault();
-    }
-
-    private int getDefaultExpirationSecondsFromConfig() {
-        int seconds = 60;
-        try {
-            seconds = Integer.parseInt(readMainProperties().getProperty("cache.expirationSeconds"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return seconds;
+    public static CachingManagerDefault create(int secondsToExpiration) {
+        return new CachingManagerDefault(secondsToExpiration);
     }
 
     @Override
