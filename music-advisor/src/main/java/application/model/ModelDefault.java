@@ -21,14 +21,14 @@ public class ModelDefault implements Model {
     private String accessToken;
     private Cache<UserRequestType, JsonObject> cache;
 
-    private ModelDefault(String resource, String accessToken) {
-        cache = CachingManagerDefault.create();
+    private ModelDefault(String resource, String accessToken, int cacheExpirySeconds) {
+        cache = CachingManagerDefault.create(cacheExpirySeconds);
         this.resource = resource;
         this.accessToken = accessToken;
     }
 
-    public static ModelDefault create(String resource, String accessToken) {
-        return new ModelDefault(resource, accessToken);
+    public static ModelDefault create(String resource, String accessToken, int cacheExpirySeconds) {
+        return new ModelDefault(resource, accessToken, cacheExpirySeconds);
     }
 
     @Override

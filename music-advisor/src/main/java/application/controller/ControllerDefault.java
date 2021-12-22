@@ -8,11 +8,16 @@ import application.model.exception.ClientServerException;
 import application.view.View;
 import application.view.ViewConsole;
 
+import java.io.FileNotFoundException;
 import java.util.InputMismatchException;
 import java.util.List;
 
 import static application.controller.Config.*;
 import static application.controller.operation.manager.OperationManager.*;
+import static application.controller.util.property.PropertiesApplicator.applyAuthorizationProperties;
+import static application.controller.util.property.PropertiesApplicator.applyCacheProperties;
+import static application.controller.util.property.PropertiesApplicator.applyInteractionProperties;
+import static application.controller.util.property.PropertiesApplicator.applyPaginationProperties;
 import static application.model.UserRequestType.CATEGORIES;
 import static application.model.UserRequestType.FEATURED_PLAYLISTS;
 import static application.model.UserRequestType.NEW_RELEASES;
@@ -24,9 +29,9 @@ public class ControllerDefault implements Controller {
             UNKNOWN_OPERATION = "Unknown operation",
             PROVIDE_ACCESS = "Please, provide access for application.",
             SPECIFY_CATEGORY = "Please specify a category: \"playlists <category>\"",
-            EXPIRED = "Access token expired";
-
-    private static final String[] NO_ARGUMENTS = {};
+            EXPIRED = "Access token expired",
+            PROPERTY_LOADING_FAILED = "Specify parameters manually and restart the application";
+    public static final String USE_AUTH_LINK = "use this link to request the access code:";
 
     private Model model;
     private View view;
@@ -34,14 +39,31 @@ public class ControllerDefault implements Controller {
     private boolean signedIn;
     private boolean exitCommandReceived;
 
-    private ControllerDefault() {
+    private ControllerDefault(String[] args) {
         signedIn = false;
         exitCommandReceived = false;
-        view = ViewConsole.create(ELEMENT_PER_PAGE);
+        initView(args);
+        applyProperties(args);
     }
 
-    public static Controller create() {
-        return new ControllerDefault();
+    private void applyProperties(String[] args) {
+        try {
+            applyInteractionProperties(args);
+            applyCacheProperties();
+            applyAuthorizationProperties(args);
+        } catch (FileNotFoundException e) {
+            view.addToOutput(e.getMessage());
+            view.addToOutput(PROPERTY_LOADING_FAILED);
+        }
+    }
+
+    private void initView(String[] args) {
+        applyPaginationProperties(args);
+        view = ViewConsole.create(ITEM_PER_PAGE);
+    }
+
+    public static Controller create(String[] args) {
+        return new ControllerDefault(args);
     }
 
     @Override
@@ -63,7 +85,7 @@ public class ControllerDefault implements Controller {
         } catch (NullPointerException e) {
             view.addToOutput(EXPIRED);
             view.addToOutput(PROVIDE_ACCESS);
-            perform("auth", NO_ARGUMENTS);
+            perform("auth", args);
         }
     }
 
@@ -87,9 +109,9 @@ public class ControllerDefault implements Controller {
                 case "prev" -> view.prev();
 
                 /* Request to API */
-                case "new" -> updateView(get(NEW_RELEASES).execute(model, NO_ARGUMENTS));
-                case "featured" -> updateView(get(FEATURED_PLAYLISTS).execute(model, NO_ARGUMENTS));
-                case "categories" -> updateView(get(CATEGORIES).execute(model, NO_ARGUMENTS));
+                case "new" -> updateView(get(NEW_RELEASES).execute(model, args));
+                case "featured" -> updateView(get(FEATURED_PLAYLISTS).execute(model, args));
+                case "categories" -> updateView(get(CATEGORIES).execute(model, args));
                 case "playlists" -> {
                     if (args==null || args.length != 1) {
                         throw new InputMismatchException(SPECIFY_CATEGORY);
@@ -97,17 +119,24 @@ public class ControllerDefault implements Controller {
                     updateView(get(PLAYLISTS).execute(model, args));
                 }
 
-                /* Application */
                 default -> throw new InputMismatchException(UNKNOWN_OPERATION);
             }
-        } else view.addToOutput(PROVIDE_ACCESS);
+        } else if (!exitCommandReceived) view.addToOutput(PROVIDE_ACCESS);
     }
 
     private void auth() throws AuthException {
         AuthCoordinator coordinator = AuthCoordinator.create();
+        view.addToOutput("use this link to request the access code:");
         view.addToOutput(coordinator.getAccessRequestLink());
+        view.addToOutput("waiting for code...");
         ACCESS_TOKEN = coordinator.getAccessToken();
-        model = ModelDefault.create(API_SERVER, ACCESS_TOKEN);
+        /* In theory, the output should be performed at each stage, but I encapsulated all the work with OAuth
+           in a separate class. I do not consider it expedient to add a view dependency to it (only view should output
+           to the console, so I decide simulate the "phased" output
+        */
+        view.addToOutput("code received\nMaking http request for access_token...\nSuccess!");
+
+        model = ModelDefault.create(API_SERVER, ACCESS_TOKEN, CACHE_EXPIRATION_SECONDS);
         signedIn = true;
     }
 }

@@ -10,7 +10,7 @@ public class ViewConsole implements View {
     private int itemIndexPointer;
     private int currentPageNumber;
     private int pagesTotalAmount;
-    private int itemsPerPage;
+    private final int itemsPerPage;
 
     private ViewConsole(int itemsPerPage) {
         this.itemsPerPage = itemsPerPage;
@@ -75,7 +75,7 @@ public class ViewConsole implements View {
         }
 
         if (itemIndexPointer < data.size())
-            System.out.printf("---PAGE %d OF %d---\n", currentPageNumber, pagesTotalAmount);
+            System.out.printf("---PAGE %d OF %d---\n\n", currentPageNumber, pagesTotalAmount);
         else println(NO_MORE_PAGES);
     }
 
