@@ -1,44 +1,68 @@
+/* Class name: OperationNewReleases
+ * Date: 21.12.21
+ * Version 1.0
+ * Author: makhlov
+ */
 package application.controller.operation.type;
 
-import application.controller.operation.Operation;
-import application.model.Model;
-import application.model.UserRequestType;
-import application.model.exception.ClientServerException;
+import java.util.List;
+import java.util.ArrayList;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import application.model.Model;
+import application.model.exception.ClientServerException;
 
+import application.controller.operation.Operation;
+
+import static application.model.UserRequestType.NEW_RELEASES;
+
+/**
+ * Operation of getting a selection of new releases
+ */
 public class OperationNewReleases implements Operation<List<String>> {
 
+    /**
+     * Gets list of published new releases
+     *
+     * @param model                  model with which the operation will interact
+     * @param args                   none (empty array at version 1.0)
+     *
+     * @return                       list of new releases
+     * @throws ClientServerException is related to the problems of obtaining information from the api spotify
+     */
     @Override
     public List<String> execute(Model model, String[] args) throws ClientServerException {
-        return parseNewReleases(model.get(UserRequestType.NEW_RELEASES, args));
+        return parseNewReleases(model.get(NEW_RELEASES, args));
     }
 
+    /**
+     * Perform parse a raw JsonObject into a list of strings
+     * @param object object for parse
+     * @return       list with parsed objects
+     */
     private static List<String> parseNewReleases(final JsonObject object) {
         JsonArray releases = object.getAsJsonObject("albums").getAsJsonArray("items");
 
+        StringBuilder resultBuilder;
         List<String> result = new ArrayList<>();
         for (var item : releases) {
             JsonObject currentItem = item.getAsJsonObject();
 
-            StringBuilder artistsString = new StringBuilder("[");
+            StringBuilder artistsStringBuilder = new StringBuilder("[");
             JsonArray artists = currentItem.getAsJsonArray("artists");
             for (var artist : artists) {
-                artistsString.append(artist.getAsJsonObject().get("name").getAsString()).append(", ");
+                artistsStringBuilder.append(artist.getAsJsonObject().get("name").getAsString()).append(", ");
             }
-            artistsString.replace(artistsString.length()-2, artistsString.length()-1, "")
-                         .deleteCharAt(artistsString.length()-1)
+            artistsStringBuilder.replace(artistsStringBuilder.length()-2, artistsStringBuilder.length()-1, "")
+                         .deleteCharAt(artistsStringBuilder.length()-1)
                          .append("]");
 
-            StringBuilder resultBuilder = new StringBuilder(currentItem.get("name").getAsString());
+            resultBuilder = new StringBuilder(currentItem.get("name").getAsString());
             resultBuilder.append("\n")
                          .append(currentItem.getAsJsonObject("external_urls").get("spotify").getAsString())
-                         .append("\n").append(artistsString);
+                         .append("\n").append(artistsStringBuilder);
 
             result.add(resultBuilder.toString());
         }

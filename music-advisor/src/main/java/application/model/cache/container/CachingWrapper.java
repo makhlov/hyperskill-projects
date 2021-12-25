@@ -1,13 +1,17 @@
+/* Class name: CachingWrapper
+ * Date: 15.12.21
+ * Version 1.0
+ * Author: makhlov
+ */
 package application.model.cache.container;
 
 import application.model.cache.exception.CacheExpiredException;
-
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.now;
 
 /**
- * Wrapper class for simplified object caching received from Spotify API
+ * Wrapper class for simplified object caching
  *
  * @param <T> the object to be cached
  */
@@ -27,6 +31,7 @@ public class CachingWrapper<T> {
 
     /**
      * Get wrapped object expiration date
+     *
      * @return expiration date
      */
     public LocalDateTime getExpiresDate() {
