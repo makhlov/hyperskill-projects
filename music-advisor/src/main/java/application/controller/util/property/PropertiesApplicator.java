@@ -1,8 +1,18 @@
+/* Class name: PropertiesApplicator
+ * Date: 22.12.21
+ * Version 1.0
+ * Author: makhlov
+ */
 package application.controller.util.property;
 
+/* Common imports */
 import java.io.FileNotFoundException;
 import java.util.Properties;
 
+import static java.lang.Integer.parseInt;
+import static java.lang.String.format;
+
+/* Static imports */
 import static application.controller.Config.API_SERVER;
 import static application.controller.Config.AUTH_SERVER;
 import static application.controller.Config.CACHE_EXPIRATION_SECONDS;
@@ -10,12 +20,11 @@ import static application.controller.Config.CLIENT_ID;
 import static application.controller.Config.CLIENT_SECRET;
 import static application.controller.Config.ITEM_PER_PAGE;
 import static application.controller.Config.REDIRECT_URI;
+
 import static application.controller.util.property.PropertiesFileReader.loadCachingProperties;
 import static application.controller.util.property.PropertiesFileReader.loadInteractionProperties;
 import static application.controller.util.property.PropertiesFileReader.loadPaginationProperties;
 import static application.controller.util.property.PropertiesFileReader.readAuthProperties;
-import static java.lang.Integer.parseInt;
-import static java.lang.String.*;
 
 public class PropertiesApplicator {
 
