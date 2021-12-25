@@ -136,7 +136,7 @@ public class ControllerDefault implements Controller {
         }
         if (command.equalsIgnoreCase("auth")) {
             auth();
-        } else if (signedIn) {
+        } else if (signedIn && !exitCommandReceived) {
             switch (command) {
                 /* Pagination */
                 case "next" -> view.next();
