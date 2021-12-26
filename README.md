@@ -112,7 +112,12 @@
                     Project link to Hyperskill: <a href="https://hyperskill.org/projects/93">click</a> <br>
                 </p>
             </ul>
-            <h4>⬛ Project: <a href="">Music Advisor</a></h4>
+            <h4>⬛ Project: 
+                <a  
+                    href="https://github.com/makhlov/hyperskill-projects/tree/music-advisor/develop/music-advisor">
+                    Music Advisor
+                </a>
+            </h4>
             <ul>
                 <p>
                     <img src="https://img.shields.io/badge/Spotify’s API-informational?style=flat&color=white" alt=""/>
@@ -124,6 +129,7 @@
                     <img src="https://img.shields.io/badge/HTTP Client Server-informational?style=flat&color=white" alt=""/>
                     <img src="https://img.shields.io/badge/Generics-informational?style=flat&color=white" alt=""/>
                     <br>
+                    Stages: <b>5/5</b> 🟩🟩🟩🟩🟩<br>
                     Hyperskill difficulty: 
                         <img src="https://hyperskill.azureedge.net/static/img/hard.799bc7f4.svg"> Hard<br>
                     Estimated time to complete: 46 hours<br>
