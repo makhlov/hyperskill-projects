@@ -99,12 +99,12 @@ public class ControllerDefault implements Controller {
     public void perform(String command, String[] args) {
         try {
             rout(command, args);
-        } catch (ClientServerException | InputMismatchException | AuthException e) {
-            view.addToOutput(e.getMessage());
         } catch (NullPointerException e) {
             view.addToOutput(EXPIRED);
             view.addToOutput(PROVIDE_ACCESS);
             perform("auth", args);
+        } catch (ClientServerException | AuthException | RuntimeException e) {
+            view.addToOutput(e.getMessage());
         }
     }
 
@@ -122,14 +122,11 @@ public class ControllerDefault implements Controller {
      * @param command                 user command
      * @param args                    arguments passed with the command
      *
-     * @throws InputMismatchException occurs when the user's command is invalid
-     * @throws NullPointerException   occurs when access to the API server is interrupted
      * @throws ClientServerException  @see {@link ClientServerException}
      * @throws AuthException          @see {@link ClientServerException}
 
      */
-    private void rout(String command, String[] args)
-            throws ClientServerException, InputMismatchException, AuthException, NullPointerException
+    private void rout(String command, String[] args) throws ClientServerException, AuthException
     {
         if (command.equalsIgnoreCase("exit")) {
             exitCommandReceived = true;

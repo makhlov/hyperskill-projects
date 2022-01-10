@@ -76,6 +76,7 @@ public class CachingManagerDefault implements Cache<UserRequestType, JsonObject>
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("rawtypes")
     @Override
     public void put(UserRequestType key, JsonObject value) {
         LocalDateTime expiration = LocalDateTime.now().plusSeconds(secondsToExpiration);
